@@ -15,6 +15,7 @@ import '../../widgets/category_widgets.dart';
 import '../../widgets/product_widgets.dart';
 import '../../widgets/reco_product_widgets.dart';
 import '../add_category_screen.dart';
+import '../category_product_screen.dart';
 
 class WebHomeScreen extends StatefulWidget {
   const WebHomeScreen({Key? key}) : super(key: key);
@@ -296,7 +297,14 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                             itemCount: snapshot.data!.docs.length,
                             shrinkWrap: true,
                             itemBuilder: (context, index) => GestureDetector(
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) =>
+                                            CategoryProductScreen(
+                                                categoryName: snapshot.data!
+                                                    .docs[index]
+                                                    .data()['categoryName'])));
+                                  },
                                   child: Center(
                                     child: Container(
                                       padding:
