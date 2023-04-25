@@ -1,4 +1,4 @@
-# frenzy_store
+ frenzy_store
 
 A new Flutter project.
 
