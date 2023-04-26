@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frenzy_store/resources/firestore_methods.dart';
 import 'package:frenzy_store/screens/review_product_screen.dart';
 import 'package:frenzy_store/widgets/order_progress_bar_widget.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -14,6 +15,42 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   int price = 1299;
+
+  bool _isOrdered = true;
+  bool _isPacked = false;
+  bool _isShipped = false;
+  bool _isDelivered = false;
+  bool _isCancelled = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.snap['orderStatus'] == "ordered"){
+      setState(() {
+        _isOrdered = true;
+      });
+    }else if(widget.snap['orderStatus'] == "packed"){
+      setState(() {
+        _isPacked = true;
+      });
+    }else if(widget.snap['orderStatus'] == "shipped"){
+      setState(() {
+        _isPacked = true;
+        _isShipped = true;
+      });
+    }else if(widget.snap['orderStatus'] == "delivered"){
+      setState(() {
+        _isPacked = true;
+        _isShipped = true;
+        _isDelivered = true;
+      });
+    }else if(widget.snap['orderStatus'] == "cancelled"){
+      setState(() {
+        _isCancelled = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,18 +91,20 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               color: Colors.grey.shade400,
             ),
             SizedBox(
-              height: 400,
+              height: _isCancelled ?160:400,
               child: OrderProgressBarWidget(snap: widget.snap),
             ),
+            _isCancelled ? Container():
             Divider(
               height: 0.2,
               color: Colors.grey.shade400,
             ),
+            _isCancelled ? Container():
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     _orderCancelDialog();
                   },
                   child: Row(
@@ -445,52 +484,65 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       ),
     );
   }
+
   void _orderCancelDialog() {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          contentPadding:
-          EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 20),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              const Icon(
-                Icons.remove_shopping_cart,
-                color: Colors.blue,
+              contentPadding:
+                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 20),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              title: Row(
+                children: [
+                  const Icon(
+                    Icons.remove_shopping_cart,
+                    color: Colors.blue,
+                  ),
+                  const Text("  Order Cancel")
+                ],
               ),
-              const Text("  Order Cancel")
-            ],
-          ),
-          content: Text(
-            "Are you sure want to Cancel the order?",
-            style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87),
-          ),
-          actions: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(color: Colors.blue, fontSize: 16),
+              content: Text(
+                "Are you sure want to Cancel the order?",
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87),
               ),
-            ),
-            MaterialButton(
-              onPressed: () async {
+              actions: [
+                MaterialButton(
+                  onPressed: () {
+                    FireStoreMethods()
+                        .markOrderStatusCancelled(
+                        orderBy: widget.snap['orderBy'],
+                        orderId: widget.snap['orderId'],
+                        orderFrom: widget.snap['orderFrom'])
+                        .then((value) {
+                      setState(() {
 
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Leave",
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-            )
-          ],
-        ));
+                        //update the progress indicator
+
+                      });
+
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "Leave",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                )
+              ],
+            ));
   }
 }
 
@@ -586,5 +638,3 @@ class _ProductDetailsWidgetState extends State<ProductDetailsWidget> {
     );
   }
 }
-
-

@@ -82,7 +82,6 @@ class FireStoreMethods {
   Future removeFromCart({
     required String productId,
   }) async {
-
     await firebaseFirestore
         .collection("users")
         .doc(firebaseAuth.currentUser?.uid)
@@ -113,7 +112,6 @@ class FireStoreMethods {
   Future removeFromWishList({
     required String productId,
   }) async {
-
     await firebaseFirestore
         .collection("users")
         .doc(firebaseAuth.currentUser?.uid)
@@ -127,7 +125,6 @@ class FireStoreMethods {
     required String quantity,
     required String productPrice,
     required String productCuttedPrice,
-
   }) async {
     DateTime time = DateTime.now();
 
@@ -148,7 +145,6 @@ class FireStoreMethods {
   Future removeFromSaveLater({
     required String productId,
   }) async {
-
     await firebaseFirestore
         .collection("users")
         .doc(firebaseAuth.currentUser?.uid)
@@ -208,16 +204,19 @@ class FireStoreMethods {
     await addOrderToSeller(
       productId: productId,
       shopId: orderFrom,
-      orderId: orderId
+      orderId: orderId,
+      date: date,
+      time: time
     );
     return orderId;
-
   }
 
   Future addOrderToSeller({
     required String orderId,
     required String productId,
     required String shopId,
+    required String date,
+    required String time,
   }) async {
     await firebaseFirestore
         .collection("sellers")
@@ -227,20 +226,19 @@ class FireStoreMethods {
         .set({
       "orderId": orderId,
       "productId": productId,
+      "orderStatus": "ordered",
+      "orderTime": time,
+      "orderDate": date,
       "shopId": shopId,
       "orderBy": firebaseAuth.currentUser?.uid,
     });
-
   }
 
   Future decreaseProductQuantityCount({
     required String productId,
     required String noOfQuantity,
   }) async {
-    await firebaseFirestore
-        .collection("products")
-        .doc(productId)
-        .update({
+    await firebaseFirestore.collection("products").doc(productId).update({
       "noOfQuantity": noOfQuantity,
     });
   }
@@ -249,13 +247,9 @@ class FireStoreMethods {
     required String productId,
     required String trendingCount,
   }) async {
-    await firebaseFirestore
-        .collection("products")
-        .doc(productId)
-        .update({
+    await firebaseFirestore.collection("products").doc(productId).update({
       "trendingCount": trendingCount,
     });
-
   }
 
   Future addQuestion({
@@ -280,7 +274,8 @@ class FireStoreMethods {
       "answer": "Not yet answered",
       "uid": firebaseAuth.currentUser?.uid,
     });
-    addToMyQuestion(productId: productId, questionId: questionId,question: question);
+    addToMyQuestion(
+        productId: productId, questionId: questionId, question: question);
   }
 
   Future addToMyQuestion({
@@ -430,17 +425,17 @@ class FireStoreMethods {
   Future<bool> checkAlreadyInCart({
     required String productId,
   }) async {
-      var cartSnap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(firebaseAuth.currentUser?.uid)
-          .collection("myCart")
-          .doc(productId)
-          .get();
-      if (cartSnap.exists) {
-        return  true;
-      } else {
-        return  false;
-      }
+    var cartSnap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(firebaseAuth.currentUser?.uid)
+        .collection("myCart")
+        .doc(productId)
+        .get();
+    if (cartSnap.exists) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<bool> checkAlreadyInWishList({
@@ -453,9 +448,9 @@ class FireStoreMethods {
         .doc(productId)
         .get();
     if (cartSnap.exists) {
-      return  true;
+      return true;
     } else {
-      return  false;
+      return false;
     }
   }
 
@@ -533,5 +528,45 @@ class FireStoreMethods {
       "processedTime": tDate,
     });
     return productId;
+  }
+
+  Future markOrderStatusCancelled({
+    required String orderBy,
+    required String orderId,
+    required String orderFrom,
+  }) async {
+    String date = DateFormat("MMM d, yyyy").format(DateTime.now());
+    String time = DateFormat("hh:mm a").format(DateTime.now());
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(orderBy)
+        .collection("MyOrders")
+        .doc(orderId)
+        .update({
+      "orderStatus": "cancelled",
+      "orderCancelledDate": date,
+      "orderCancelledTime": time,
+    });
+    await markOrderStatusCancelledForSeller(
+        orderFrom: orderFrom, orderId: orderId, time: time, date: date);
+  }
+
+  Future markOrderStatusCancelledForSeller({
+    required String orderId,
+    required String orderFrom,
+    required String date,
+    required String time,
+  }) async {
+    await firebaseFirestore
+        .collection("sellers")
+        .doc(orderFrom)
+        .collection("orders")
+        .doc(orderId)
+        .update({
+      "orderStatus": "cancelled",
+      "orderCancelledDate": date,
+      "orderCancelledTime": time,
+    });
   }
 }
