@@ -35,7 +35,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         ),
         centerTitle: true,
       ),
-      body: Center(
+      body:
+      Center(
         child: Container(
           width: 350,
           height: 350,

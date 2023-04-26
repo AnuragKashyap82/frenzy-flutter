@@ -313,9 +313,9 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            if (quantityCount == 3) {
+                                            if (quantityCount == int.parse(widget.snap['noOfQuantity'])) {
                                               Utils().showSnackBar(context,
-                                                  "Max 3 quantity allowed");
+                                                  "${widget.snap['noOfQuantity']} quantity available for Now");
                                             } else {
                                               setState(() {
                                                 quantityCount =
