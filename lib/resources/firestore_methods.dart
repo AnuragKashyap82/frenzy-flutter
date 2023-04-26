@@ -569,4 +569,44 @@ class FireStoreMethods {
       "orderCancelledTime": time,
     });
   }
+
+  Future markOrderStatusReturned({
+    required String orderBy,
+    required String orderId,
+    required String orderFrom,
+  }) async {
+    String date = DateFormat("MMM d, yyyy").format(DateTime.now());
+    String time = DateFormat("hh:mm a").format(DateTime.now());
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(orderBy)
+        .collection("MyOrders")
+        .doc(orderId)
+        .update({
+      "orderStatus": "returned",
+      "orderReturnedDate": date,
+      "orderReturnedTime": time,
+    });
+    await markOrderStatusReturnedForSeller(
+        orderFrom: orderFrom, orderId: orderId, time: time, date: date);
+  }
+
+  Future markOrderStatusReturnedForSeller({
+    required String orderId,
+    required String orderFrom,
+    required String date,
+    required String time,
+  }) async {
+    await firebaseFirestore
+        .collection("sellers")
+        .doc(orderFrom)
+        .collection("orders")
+        .doc(orderId)
+        .update({
+      "orderStatus": "returned",
+      "orderReturnedDate": date,
+      "orderReturnedTime": time,
+    });
+  }
 }

@@ -21,6 +21,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   bool _isShipped = false;
   bool _isDelivered = false;
   bool _isCancelled = false;
+  bool _isReturned = false;
+  bool _isRefunded = false;
 
   @override
   void initState() {
@@ -48,6 +50,14 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     }else if(widget.snap['orderStatus'] == "cancelled"){
       setState(() {
         _isCancelled = true;
+      });
+    }else if(widget.snap['orderStatus'] == "returned"){
+      setState(() {
+        _isReturned = true;
+      });
+    }else if(widget.snap['orderStatus'] == "refunded"){
+      setState(() {
+        _isRefunded = true;
       });
     }
   }
@@ -94,12 +104,49 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               height: _isCancelled ?160:400,
               child: OrderProgressBarWidget(snap: widget.snap),
             ),
-            _isCancelled ? Container():
+            _isCancelled ? Container(): _isReturned ?Container():_isRefunded?Container():
             Divider(
               height: 0.2,
               color: Colors.grey.shade400,
             ),
-            _isCancelled ? Container():
+            _isCancelled ? Container(): _isDelivered ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    _orderReturnDialog();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Return',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w100),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                    height: 52, child: VerticalDivider(color: Colors.red)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Text(
+                      'Need Help?',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w100),
+                    )
+                  ],
+                ),
+              ],
+            ):_isReturned ?Container():_isRefunded?Container():
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -543,6 +590,66 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 )
               ],
             ));
+  }
+
+  void _orderReturnDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          contentPadding:
+          EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 20),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const Icon(
+                Icons.remove_shopping_cart,
+                color: Colors.blue,
+              ),
+              const Text("  Order Return")
+            ],
+          ),
+          content: Text(
+            "Are you sure want to Return the order?",
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87),
+          ),
+          actions: [
+            MaterialButton(
+              onPressed: () {
+                FireStoreMethods()
+                    .markOrderStatusReturned(
+                    orderBy: widget.snap['orderBy'],
+                    orderId: widget.snap['orderId'],
+                    orderFrom: widget.snap['orderFrom'])
+                    .then((value) {
+                  setState(() {
+
+                    //update the progress indicator
+
+                  });
+
+                  Navigator.pop(context);
+                });
+              },
+              child: const Text(
+                "Return",
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "Leave",
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+            )
+          ],
+        ));
   }
 }
 

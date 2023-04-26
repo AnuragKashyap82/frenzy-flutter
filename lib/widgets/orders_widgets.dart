@@ -15,6 +15,8 @@ class _OrderWidgetsState extends State<OrderWidgets> {
   bool _isShipped = false;
   bool _isDelivered = false;
   bool _isCancelled = false;
+  bool _isReturned = false;
+  bool _isRefunded = false;
 
   @override
   void initState() {
@@ -39,6 +41,14 @@ class _OrderWidgetsState extends State<OrderWidgets> {
     } else if (widget.snap['orderStatus'] == "cancelled") {
       setState(() {
         _isCancelled = true;
+      });
+    } else if (widget.snap['orderStatus'] == "returned") {
+      setState(() {
+        _isReturned = true;
+      });
+    } else if (widget.snap['orderStatus'] == "refunded") {
+      setState(() {
+        _isRefunded = true;
       });
     }
   }
@@ -117,15 +127,30 @@ class _OrderWidgetsState extends State<OrderWidgets> {
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
-                                color: Colors.black54,),
+                                color: Colors.green,),
                             ):_isCancelled ?
                             Text(
                               "Your order has been cancelled on \n${widget.snap['orderCancelledDate']}   ${widget.snap['orderCancelledTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
+                                color: Colors.red,),
+                            ):_isReturned ?
+                            Text(
+                              "Your order has been returned on \n${widget.snap['orderReturnedDate']}   ${widget.snap['orderReturnedTime']}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
                                 color: Colors.black54,),
-                            ): Container(),
+                            ): _isRefunded ?
+                            Text(
+                              "Your Amount has been refunded on \n${widget.snap['orderRefundedDate']}   ${widget.snap['orderRefundedTime']}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.red,),
+                            ):
+                            Container(),
                           ],
                         )
                       ],

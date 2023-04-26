@@ -16,6 +16,8 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
   bool _isShipped = false;
   bool _isDelivered = false;
   bool _isCancelled = false;
+  bool _isReturned = false;
+  bool _isRefunded = false;
 
   @override
   void initState() {
@@ -43,6 +45,17 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
     } else if (widget.snap['orderStatus'] == "cancelled") {
       setState(() {
         _isCancelled = true;
+      });
+    } else if (widget.snap['orderStatus'] == "returned") {
+      setState(() {
+        _isDelivered = true;
+        _isReturned = true;
+      });
+    } else if (widget.snap['orderStatus'] == "refunded") {
+      setState(() {
+        _isDelivered = true;
+        _isReturned = true;
+        _isRefunded = true;
       });
     }
   }
@@ -104,158 +117,186 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
               ),
             ],
           ),
-          _isCancelled ? Expanded(
-              child: VerticalDivider(
-                thickness: 1,
-                width: 2,
-                color: Colors.red,
-              )):
-          Expanded(
-              child: VerticalDivider(
-            thickness: 1,
-            width: 2,
-            color: Colors.green.shade600,
-          )),
+          _isCancelled
+              ? Expanded(
+                  child: VerticalDivider(
+                  thickness: 1,
+                  width: 2,
+                  color: Colors.red,
+                ))
+              : _isReturned
+                  ? Container()
+                  : Expanded(
+                      child: VerticalDivider(
+                      thickness: 1,
+                      width: 2,
+                      color: Colors.green.shade600,
+                    )),
 
           //packed
           _isCancelled
               ? Container()
-              : Row(
-                  children: [
-                    PhysicalModel(
-                      color: _isPacked
-                          ? Colors.green.shade600
-                          : Colors.grey.shade400,
-                      shadowColor: _isPacked
-                          ? Colors.green.shade600
-                          : Colors.grey.shade400,
-                      elevation: 5,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                            color: _isPacked
-                                ? Colors.green.shade600
-                                : Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(8)),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              : _isReturned
+                  ? Container()
+                  : Row(
                       children: [
-                        Row(
+                        PhysicalModel(
+                          color: _isPacked
+                              ? Colors.green.shade600
+                              : Colors.grey.shade400,
+                          shadowColor: _isPacked
+                              ? Colors.green.shade600
+                              : Colors.grey.shade400,
+                          elevation: 5,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                                color: _isPacked
+                                    ? Colors.green.shade600
+                                    : Colors.grey.shade400,
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Packed",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.black87),
-                            ),
-                            SizedBox(
-                              width: 16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Packed",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.black87),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  _isPacked
+                                      ? "${widget.snap['orderPackedDate']}   ${widget.snap['orderPackedTime']}"
+                                      : "",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600),
+                                ),
+                              ],
                             ),
                             Text(
                               _isPacked
-                                  ? "${widget.snap['orderPackedDate']}   ${widget.snap['orderPackedTime']}"
-                                  : "",
+                                  ? "Your Order has been packed"
+                                  : "Your Order is yet to be packed",
                               style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade600),
+                                  fontSize: 12, color: Colors.black87),
                             ),
                           ],
                         ),
-                        Text(
-                          _isPacked
-                              ? "Your Order has been packed"
-                              : "Your Order is yet to be packed",
-                          style: TextStyle(fontSize: 12, color: Colors.black87),
-                        ),
                       ],
                     ),
-                  ],
-                ),
-          _isCancelled ? Container():
-          Expanded(
-              child: VerticalDivider(
-            thickness: 1,
-            width: 2,
-            color: _isPacked ? Colors.green.shade600 : Colors.grey.shade400,
-          )),
+          _isCancelled
+              ? Container()
+              : _isReturned
+                  ? Container()
+                  : Expanded(
+                      child: VerticalDivider(
+                      thickness: 1,
+                      width: 2,
+                      color: _isPacked
+                          ? Colors.green.shade600
+                          : Colors.grey.shade400,
+                    )),
 
           //shipped
           _isCancelled
               ? Container()
-              : Row(
-                  children: [
-                    PhysicalModel(
-                      color: _isShipped
-                          ? Colors.green.shade600
-                          : Colors.grey.shade400,
-                      shadowColor: _isShipped
-                          ? Colors.green.shade600
-                          : Colors.grey.shade400,
-                      elevation: 5,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                            color: _isShipped
-                                ? Colors.green.shade600
-                                : Colors.grey.shade400,
-                            borderRadius: BorderRadius.circular(8)),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              : _isReturned
+                  ? Container()
+                  : Row(
                       children: [
-                        Row(
+                        PhysicalModel(
+                          color: _isShipped
+                              ? Colors.green.shade600
+                              : Colors.grey.shade400,
+                          shadowColor: _isShipped
+                              ? Colors.green.shade600
+                              : Colors.grey.shade400,
+                          elevation: 5,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            width: 12,
+                            height: 12,
+                            decoration: BoxDecoration(
+                                color: _isShipped
+                                    ? Colors.green.shade600
+                                    : Colors.grey.shade400,
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Shipped",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.black87),
-                            ),
-                            SizedBox(
-                              width: 16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Shipped",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.black87),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  _isShipped
+                                      ? "${widget.snap['orderShippedDate']}   ${widget.snap['orderShippedTime']}"
+                                      : "",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade600),
+                                ),
+                              ],
                             ),
                             Text(
                               _isShipped
-                                  ? "${widget.snap['orderShippedDate']}   ${widget.snap['orderShippedTime']}"
-                                  : "",
+                                  ? "Your Order has been shipped"
+                                  : "Your Order is Yet to be shipped",
                               style: TextStyle(
-                                  fontSize: 12, color: Colors.grey.shade600),
+                                  fontSize: 12, color: Colors.black87),
                             ),
                           ],
                         ),
-                        Text(
-                          _isShipped
-                              ? "Your Order has been shipped"
-                              : "Your Order is Yet to be shipped",
-                          style: TextStyle(fontSize: 12, color: Colors.black87),
-                        ),
                       ],
                     ),
-                  ],
-                ),
-          _isCancelled ? Container():
-          Expanded(
-              child: VerticalDivider(
-            thickness: 1,
-            width: 2,
-            color: _isShipped ? Colors.green.shade600 : Colors.grey.shade400,
-          )),
+          _isCancelled
+              ? Container()
+              : _isReturned
+                  ? Expanded(
+                      child: VerticalDivider(
+                      thickness: 1,
+                      width: 2,
+                      color: _isReturned
+                          ? Colors.green.shade600
+                          : Colors.grey.shade400,
+                    ))
+                  : Expanded(
+                      child: VerticalDivider(
+                      thickness: 1,
+                      width: 2,
+                      color: _isShipped
+                          ? Colors.green.shade600
+                          : Colors.grey.shade400,
+                    )),
 
           //Delivered
           _isCancelled
@@ -293,8 +334,7 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
                           children: [
                             Text(
                               "Cancelled",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.red),
+                              style: TextStyle(fontSize: 14, color: Colors.red),
                             ),
                             SizedBox(
                               width: 16,
@@ -309,7 +349,7 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
                           ],
                         ),
                         Text(
-                           "Your order has been Cancelled",
+                          "Your order has been Cancelled",
                           style: TextStyle(fontSize: 12, color: Colors.black87),
                         ),
                       ],
@@ -375,6 +415,142 @@ class _OrderProgressBarWidgetState extends State<OrderProgressBarWidget> {
                     ),
                   ],
                 ),
+
+          _isReturned
+              ? Expanded(
+                  child: VerticalDivider(
+                  thickness: 1,
+                  width: 2,
+                  color: _isShipped ? Colors.green.shade600 : Colors.yellow,
+                ))
+              : Container(),
+
+          _isReturned
+              ? Row(
+                  children: [
+                    PhysicalModel(
+                      color: _isReturned ? Colors.yellow : Colors.grey.shade400,
+                      shadowColor:
+                          _isReturned ? Colors.yellow : Colors.grey.shade400,
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                            color: _isReturned
+                                ? Colors.yellow
+                                : Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Return",
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.black87),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text(
+                              _isReturned
+                                  ? "${widget.snap['orderReturnedDate']}   ${widget.snap['orderReturnedTime']}"
+                                  : "",
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          _isReturned
+                              ? "Your order has been returned"
+                              : "Your order is yet to be returned",
+                          style: TextStyle(fontSize: 12, color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Container(),
+
+          _isReturned
+              ? Expanded(
+                  child: VerticalDivider(
+                  thickness: 1,
+                  width: 2,
+                  color: _isReturned ? Colors.yellow : Colors.yellow,
+                ))
+              : Container(),
+
+          _isReturned
+              ? Row(
+                  children: [
+                    PhysicalModel(
+                      color: _isRefunded ? Colors.yellow : Colors.grey.shade400,
+                      shadowColor:
+                          _isRefunded ? Colors.yellow : Colors.grey.shade400,
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                            color: _isRefunded
+                                ? Colors.yellow
+                                : Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Refunded",
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.black87),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text(
+                              _isRefunded
+                                  ? "${widget.snap['orderRefundedDate']}   ${widget.snap['orderRefundedTime']}"
+                                  : "",
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey.shade600),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          _isRefunded
+                              ? "Your Amount has been refunded"
+                              : "Your Amount is yet to be refund",
+                          style: TextStyle(fontSize: 12, color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Container(),
         ],
       ),
     );
