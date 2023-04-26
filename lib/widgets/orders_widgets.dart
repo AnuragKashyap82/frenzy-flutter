@@ -55,7 +55,7 @@ class _OrderWidgetsState extends State<OrderWidgets> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 12, right: 12, top: 26, bottom: 26),
+              padding: const EdgeInsets.only(left: 26, right: 16, top: 26, bottom: 26),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,35 +92,35 @@ class _OrderWidgetsState extends State<OrderWidgets> {
                             ),
                             _isOrdered ?
                             Text(
-                              "Your order has been placed on ${widget.snap['orderDate']}  ${widget.snap['orderTime']}",
+                              "Your order has been placed on\n${widget.snap['orderDate']}  ${widget.snap['orderTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black54,),
                             ) :_isPacked ?
                             Text(
-                              "Your order has been packed on ${widget.snap['orderPackedDate']}   ${widget.snap['orderPackedTime']}",
+                              "Your order has been packed on \n${widget.snap['orderPackedDate']}   ${widget.snap['orderPackedTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black54,),
                             ) :_isShipped ?
                             Text(
-                              "Your order has been shipped on ${widget.snap['orderShippedDate']}   ${widget.snap['orderShippedTime']}",
+                              "Your order has been shipped on \n${widget.snap['orderShippedDate']}   ${widget.snap['orderShippedTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black54,),
                             ):_isDelivered ?
                             Text(
-                              "Your order has been delivered on ${widget.snap['orderDeliveredDate']}   ${widget.snap['orderDeliveredTime']}",
+                              "Your order has been delivered on \n${widget.snap['orderDeliveredDate']}   ${widget.snap['orderDeliveredTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black54,),
                             ):_isCancelled ?
                             Text(
-                              "Your order has been cancelled on ${widget.snap['orderCancelledDate']}   ${widget.snap['orderCancelledTime']}",
+                              "Your order has been cancelled on \n${widget.snap['orderCancelledDate']}   ${widget.snap['orderCancelledTime']}",
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.normal,
