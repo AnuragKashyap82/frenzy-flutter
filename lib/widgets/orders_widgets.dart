@@ -55,7 +55,7 @@ class _OrderWidgetsState extends State<OrderWidgets> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 26, right: 16, top: 26, bottom: 26),
+              padding: const EdgeInsets.only(left: 12, right: 12, top: 26, bottom: 26),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
