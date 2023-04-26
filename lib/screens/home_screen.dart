@@ -17,7 +17,6 @@ import 'package:frenzy_store/widgets/reco_recent_product_widgets.dart';
 import '../animations/fade_animation.dart';
 import '../widgets/product_widgets.dart';
 import 'add_category_screen.dart';
-import 'add_product_screens/add_product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -240,10 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(color: Colors.black87),
                 ),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddProductScreen()));
+
                 },
               ),
             ),
