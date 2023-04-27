@@ -239,6 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                       webScreenLayout: WebHomeScreen(),
                                                       mobileScreenLayout: HomeScreen())));
                                         }else{
+                                          FirebaseAuth.instance.signOut();
                                           Utils().showSnackBar(context, "No Users Found!!!");
                                         }
                                       });
