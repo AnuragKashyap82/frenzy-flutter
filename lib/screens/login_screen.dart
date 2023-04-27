@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frenzy_store/resources/authentication.dart';
 import 'package:frenzy_store/responsive_layout/responsive_layout_screens.dart';
@@ -20,6 +22,25 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+
+  var _userData = {};
+
+  Future checkUsers() async {
+    try {
+      var userSnap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .get();
+      if (userSnap.exists) {
+        setState(() {
+          _userData = userSnap.data()!;
+        });
+      } else {}
+      setState(() {});
+    } catch (e) {
+      Utils().showSnackBar(context, e.toString());
+    }
+  }
 
   @override
   void dispose() {
@@ -204,19 +225,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                       .signInUser(
                                           email: emailController.text,
                                           password: passwordController.text);
-                                  setState(() {
-                                    isLoading = false;
-                                  });
                                   if (output == "success") {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ResponsiveLayout(
-                                                    webScreenLayout:
-                                                        WebHomeScreen(),
-                                                    mobileScreenLayout:
-                                                        HomeScreen())));
+                                    checkUsers().then((value) {
+                                      checkUsers().then((value) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        if(_userData['userType'] == "users"){
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const ResponsiveLayout(
+                                                      webScreenLayout: WebHomeScreen(),
+                                                      mobileScreenLayout: HomeScreen())));
+                                        }else{
+                                          Utils().showSnackBar(context, "No Users Found!!!");
+                                        }
+                                      });
+                                    });
                                   } else {
                                     Utils().showSnackBar(context, output);
                                   }
