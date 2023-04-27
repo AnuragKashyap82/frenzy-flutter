@@ -364,6 +364,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -434,6 +435,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -504,6 +506,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -572,6 +575,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -640,6 +644,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -709,6 +714,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -770,6 +776,7 @@ class _WebHomeScreenState extends State<WebHomeScreen> {
                       StreamBuilder(
                           stream: FirebaseFirestore.instance
                               .collection("products")
+                              .where("active", isEqualTo: true)
                               .snapshots(),
                           builder: (context,
                               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>

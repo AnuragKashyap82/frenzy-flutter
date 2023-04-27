@@ -512,6 +512,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                              .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -627,6 +628,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -694,6 +696,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -760,6 +763,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -826,7 +830,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
-                                  .orderBy('trendingCount', descending: true)
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -894,6 +898,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: StreamBuilder(
                               stream: FirebaseFirestore.instance
                                   .collection("products")
+                                  .where("active", isEqualTo: true)
                                   .snapshots(),
                               builder: (context,
                                   AsyncSnapshot<
@@ -956,6 +961,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       StreamBuilder(
                           stream: FirebaseFirestore.instance
                               .collection("products")
+                              .where("active", isEqualTo: true)
                               .snapshots(),
                           builder: (context,
                               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
